@@ -1,35 +1,18 @@
-name: Blog Deploy
-
-on:
-  push:
-    branches:
-      - main  # Set a branch to deploy
-  pull_request:
-
+on: push
+name: 🚀 Deploy website on push
 jobs:
-  deploy:
-    runs-on: ubuntu-22.04
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
     steps:
-        uses: actions/checkout@v3
-	with:
-	  submodules: true  # Fetch Hugo themes (true OR recursive)
-	  fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
-
-    - name: Setup Hugo
-	uses: peaceiris/actions-hugo@v2
-	with:
-	  hugo-version: '0.101.0'
-
-      - name: Build
-	run: hugo
-
-      - name: Sync files
-	uses: SamKirkland/FTP-Deploy-Action@4.0.0
-	with:
-	  server: ${{ secrets.FTP_SERVER }}
-	  username: ${{ secrets.FTP_USERNAME }}
-	  password: ${{ secrets.FTP_PASSWORD }}
-	  local-dir: ./www/
-	  server-dir: /home/monichi/www/
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftps
+        server-dir: /home/monichi/www
